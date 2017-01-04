@@ -3,12 +3,12 @@
   "version": "0.0.1",
   "description": "多级联动选择器的数据层。",
   "files": [
-    "./index.js",
+    "index.js",
     "dist"
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lmk123/multilevel.git"
+    "url": "git+https://github.com/lmk123/multilevel.js.git"
   },
   "scripts": {
     "dev": "webpack --watch",
@@ -29,7 +29,7 @@
   "author": "Mingkai Li <milk.lee@qq.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/lmk123/multilevel/issues"
+    "url": "https://github.com/lmk123/multilevel.js/issues"
   },
-  "homepage": "https://github.com/lmk123/multilevel#readme"
+  "homepage": "https://github.com/lmk123/multilevel.js#readme"
 }
