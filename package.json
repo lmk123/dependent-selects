@@ -1,0 +1,35 @@
+{
+  "name": "multilevel.js",
+  "version": "0.0.1",
+  "description": "多级联动选择器的数据层。",
+  "files": [
+    "./index.js",
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lmk123/multilevel.git"
+  },
+  "scripts": {
+    "dev": "webpack --watch",
+    "build": "npm run lint && webpack && PRODUCTION=1 webpack",
+    "lint": "eslint --ignore-pattern '/dist/' '**/*.{js,vue}'",
+    "prepublish": "npm run build"
+  },
+  "dependencies": {
+    "tiny-emitter": "1.1.0"
+  },
+  "devDependencies": {
+    "eslint": "3.12.2",
+    "eslint-config-standard": "6.2.1",
+    "eslint-plugin-promise": "3.4.0",
+    "eslint-plugin-standard": "2.0.1",
+    "webpack": "1.14.0"
+  },
+  "author": "Mingkai Li <milk.lee@qq.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lmk123/multilevel/issues"
+  },
+  "homepage": "https://github.com/lmk123/multilevel#readme"
+}

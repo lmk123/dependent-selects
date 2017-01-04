@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+</head>
+<body>
+  <div id="app"></div>
+  <div id="loading" style="display: none;">loading</div>
+  <script src="dist/multilevel.js"></script>
+  <script>
+    var app = document.getElementById('app')
+    var loading = document.getElementById('loading')
+
+    var multi = new MultiLevel({
+      query: function (index, multi) {
+        if (index >= 5) return
+        return new Promise(function (r) {
+          loading.style.display = 'block'
+          setTimeout(function () {
+            loading.style.display = 'none'
+            r(['a', 'b', 'c', 'd', 'e'])
+          }, Math.random() * 500)
+        })
+      }
+    })
+
+    multi.on('list added', function (list, index, multi) {
+      var select = document.createElement('select')
+
+      var empty = document.createElement('option')
+      empty.textContent = '请选择'
+      empty.value = ''
+      select.appendChild(empty)
+
+      list.forEach(function (item) {
+        var option = document.createElement('option')
+        option.textContent = item
+        select.appendChild(option)
+      })
+
+      select.value = ''
+
+      app.appendChild(select)
+    })
+
+    multi.on('set value', function (index, val) {
+      app.children[index].value = val || ''
+    })
+
+    multi.on('lists spliced', function (deletedLists, deletedOptions, multi) {
+      var length = deletedLists.length
+      var deletedSelect = Array.prototype.slice.call(app.children, app.children.length - length)
+      deletedSelect.forEach(function (select) {
+        app.removeChild(select)
+      })
+    })
+
+    app.addEventListener('change', function (e) {
+      var select = e.target
+      var index = Array.prototype.indexOf.call(app.children, select)
+      multi.set(index, select.value, true)
+    })
+
+    function setItToMulti () {
+      multi.fill(['a', 'b', 'c'])
+    }
+  </script>
+</body>
+</html>
