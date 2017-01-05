@@ -99,18 +99,18 @@ p.set = function (index, val, preventEvent) {
     return Promise.reject(new Error('第' + (index + 1) + '个下拉框还没有菜单'))
   }
 
-  // 如果在列表中找不到用户要设置的值，则设为 null
-  if (list.indexOf(val) < 0 && val != null) {
-    if (process.env.NODE_ENV === 'development') {
-      console.warn('在下拉列表中找不到你要设置的值，所以值被重置为 null')
-    }
-    val = null
+  var notEmptyVal = val != null
+
+  // 如果在列表中找不到用户要设置的值则 reject
+  if (notEmptyVal && list.indexOf(val) < 0) {
+    return Promise.reject('在第' + (index + 1) + '个列表中找不到你要设置的值')
   }
 
-  if (val != null) this.selected[index] = val
+  var selected = this.selected
+  if (notEmptyVal) selected[index] = val
   if (!preventEvent) this.emit('set', val, index)
-  if (index === max && val != null) this.emit('change', this.selected, this)
-  return this._changed(index, val == null)
+  if (index === max && notEmptyVal) this.emit('change', selected, this)
+  return this._changed(index, !notEmptyVal)
 }
 
 /**
