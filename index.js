@@ -144,8 +144,9 @@ p.fill = function (choose) {
     }
   }
 
+  var _this = this
   return this.ready.then(function () {
-    return this._iterator(0, choose)
+    return _this._iterator(0, choose)
   })
 }
 
