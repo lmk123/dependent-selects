@@ -57,6 +57,7 @@ p._changed = function (index) {
   var length = deletedLists.length
   if (length) {
     this.emit('cut-off', length, this, deletedLists, deletedSelected)
+    this.emit('change', this.selected, this)
   }
 
   var _this = this
@@ -78,6 +79,7 @@ p._changed = function (index) {
     lists.push(list)
     selected.push(null)
     _this.emit('add', list, next, _this)
+    _this.emit('change', selected, _this)
   })
 }
 
@@ -85,12 +87,13 @@ p._changed = function (index) {
  * 设置一个下拉框的值
  * @param {number} index - 要设置第几个下拉框
  * @param {*} val
- * @param {boolean} [preventEvent] - 设为 true 则不会触发 'change' 事件
+ * @param {boolean} [preventEvent] - 设为 true 则不会触发 'set' 事件
  * @return {Promise}
  */
 p.set = function (index, val, preventEvent) {
-  if (index < 0 || index > this._max) {
-    return Promise.reject(new RangeError('当前一共才' + (this._max + 1) + '个下拉框，但是你尝试设置第' + (index + 1) + '个下拉框的值'))
+  var max = this._max
+  if (index < 0 || index > max) {
+    return Promise.reject(new RangeError('当前一共才' + (max + 1) + '个下拉框，但是你尝试设置第' + (index + 1) + '个下拉框的值'))
   }
 
   var list = this.lists[index]
@@ -107,7 +110,8 @@ p.set = function (index, val, preventEvent) {
   }
 
   this.selected[index] = val
-  if (!preventEvent) this.emit('change', val, index)
+  if (!preventEvent) this.emit('set', val, index)
+  if (index === max) this.emit('change', this.selected, this)
   return this._changed(index)
 }
 

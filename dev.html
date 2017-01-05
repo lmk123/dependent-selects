@@ -5,20 +5,40 @@
   <title></title>
 </head>
 <body>
-  <div id="app"></div>
-  <div id="loading" style="display: none;">loading</div>
   <script src="dist/multilevel.js"></script>
+  <div>
+    Value:
+    <span id="value"></span>
+  </div>
+  <div id="app"></div>
+  <div>
+    Max level:
+    <input id="maxLevel" type="number" min="1" value="5">
+  </div>
+  <div>
+    <button id="set">Set value to ['a', 'b', 'c']</button>
+    <button id="reset">Reset</button>
+    <button id="clear">Clear log</button>
+  </div>
+  <ul id="log"></ul>
   <script>
-    var app = document.getElementById('app')
-    var loading = document.getElementById('loading')
+    var $app = $('app')
+    var $maxLevel = $('maxLevel')
+    var $log = $('log')
+    var $value = $('value')
 
-    var multi = new MultiLevel(function (index, multi) {
-      if (index >= 5) return
-      return new Promise(function (r) {
-        loading.style.display = 'block'
+    var maxLevel = 5
+
+    var multi = new MultiLevel(function (index) {
+      if (index >= maxLevel) {
+        log('Lists end')
+        return
+      }
+      return new Promise(function (reslove) {
+        log('Loading the ' + (index + 1) + 'th list...')
         setTimeout(function () {
-          loading.style.display = 'none'
-          r(['a', 'b', 'c', 'd', 'e'])
+          log('Done')
+          reslove(['a', 'b', 'c', 'd', 'e'])
         }, Math.random() * 500)
       })
     })
@@ -27,7 +47,7 @@
       var select = document.createElement('select')
 
       var empty = document.createElement('option')
-      empty.textContent = '请选择'
+      empty.textContent = 'select one'
       empty.value = ''
       select.appendChild(empty)
 
@@ -38,29 +58,61 @@
       })
 
       select.value = ''
-
-      app.appendChild(select)
+      $app.appendChild(select)
     })
 
-    multi.on('change', function (val, index) {
-      app.children[index].value = val || ''
+    multi.on('set', function (val, index) {
+      $app.children[index].value = val || ''
     })
 
     multi.on('cut-off', function (length, multi) {
-      var deletedSelect = Array.prototype.slice.call(app.children, app.children.length - length)
+      var deletedSelect = Array.prototype.slice.call($app.children, $app.children.length - length)
       deletedSelect.forEach(function (select) {
-        app.removeChild(select)
+        $app.removeChild(select)
       })
     })
 
-    app.addEventListener('change', function (e) {
+    multi.on('change', function () {
+      log('value change to:' + JSON.stringify(multi.selected))
+      $value.textContent = JSON.stringify(multi.selected)
+    })
+
+    $app.addEventListener('change', function (e) {
       var select = e.target
-      var index = Array.prototype.indexOf.call(app.children, select)
+      var index = Array.prototype.indexOf.call($app.children, select)
       multi.set(index, select.value, true)
     })
 
-    function setItToMulti () {
+    $maxLevel.addEventListener('change', function () {
+      var level = parseInt($maxLevel.value, 10)
+      if (isNaN(level) || level <= 0) {
+        $maxLevel.value = maxLevel
+      } else {
+        maxLevel = level
+        multi.reset()
+      }
+    })
+
+    $('set').addEventListener('click', function () {
       multi.fill(['a', 'b', 'c'])
+    })
+
+    $('reset').addEventListener('click', function () {
+      multi.reset()
+    })
+
+    $('clear').addEventListener('click', function () {
+      $log.innerHTML = ''
+    })
+
+    function $ (id) {
+      return document.getElementById(id)
+    }
+
+    function log (msg) {
+      var li = document.createElement('li')
+      li.textContent = msg
+      $log.appendChild(li)
     }
   </script>
 </body>
