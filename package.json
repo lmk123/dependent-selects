@@ -1,6 +1,6 @@
 {
   "name": "multilevel.js",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "An easy way to create asynchronous multi-level linkage selector.",
   "files": [
     "index.js",
