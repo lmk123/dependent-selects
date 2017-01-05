@@ -5,11 +5,11 @@ var resolvedPromise = Promise.resolve()
 
 /**
  * 判断一个变量是不是 null、undefined 或空数组
- * @param {?Array} v
+ * @param v
  * @return {boolean}
  */
 function isEmptyArray (v) {
-  return v == null || !Array.isArray(v) || v.length === 0
+  return !Array.isArray(v) || v.length === 0
 }
 
 /**
