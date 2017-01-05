@@ -23,26 +23,15 @@ function convert2promise (v) {
 
 /**
  * 构造函数
- * @param {function(number, MultiLevel)|Object} options
- * @param {function(number, MultiLevel)} options.query
- * @param {boolean} [options.auto=true] - 是否自动加载第一个下拉框列表
+ * @param {function(number, MultiLevel)} query
  * @constructor
  */
-function MultiLevel (options) {
-  if (typeof options === 'function') {
-    options = {
-      query: options
-    }
-  }
-
-  this._query = options.query
+function MultiLevel (query) {
+  this._query = query
   this._max = -1
   this.lists = []
   this.selected = []
-
-  if (options.auto !== false) {
-    this.bootstrap()
-  }
+  this.ready = this._changed(-1)
 }
 
 var p = MultiLevel.prototype = Object.create(TinyEmitter.prototype)
@@ -65,8 +54,9 @@ p._changed = function (index) {
   // 清空后面几个下拉框的选项和值
   var deletedLists = lists.splice(next)
   var deletedSelected = selected.splice(next)
-  if (deletedLists.length) {
-    this.emit('lists spliced', deletedLists, deletedSelected, this)
+  var length = deletedLists.length
+  if (length) {
+    this.emit('cut-off', length, this, deletedLists, deletedSelected)
   }
 
   var _this = this
@@ -87,7 +77,7 @@ p._changed = function (index) {
     _this._max = next
     lists.push(list)
     selected.push(null)
-    _this.emit('list added', list, next, _this)
+    _this.emit('add', list, next, _this)
   })
 }
 
@@ -95,7 +85,7 @@ p._changed = function (index) {
  * 设置一个下拉框的值
  * @param {number} index - 要设置第几个下拉框
  * @param {*} val
- * @param {boolean} [preventEvent] - 设为 true 则不会触发 'set value' 事件
+ * @param {boolean} [preventEvent] - 设为 true 则不会触发 'change' 事件
  * @return {Promise}
  */
 p.set = function (index, val, preventEvent) {
@@ -109,7 +99,7 @@ p.set = function (index, val, preventEvent) {
   }
 
   // 如果在列表中找不到用户要设置的值，则设为 null
-  if (list.indexOf(val) < 0) {
+  if (list.indexOf(val) < 0 && val != null) {
     if (process.env.NODE_ENV === 'development') {
       console.warn('在下拉列表中找不到你要设置的值，所以值被重置为 null')
     }
@@ -117,10 +107,17 @@ p.set = function (index, val, preventEvent) {
   }
 
   this.selected[index] = val
-  if (!preventEvent) this.emit('set value', index, val)
+  if (!preventEvent) this.emit('change', val, index)
   return this._changed(index)
 }
 
+/**
+ * 循环设置下拉框的值
+ * @param {number} index
+ * @param {Array|function(number, Array)} choose
+ * @return {Promise}
+ * @private
+ */
 p._iterator = function (index, choose) {
   var list = this.lists[index]
   if (isEmptyArray(list)) return resolvedPromise
@@ -135,7 +132,7 @@ p._iterator = function (index, choose) {
 
 /**
  * 循环设置多级联动的值
- * @param {Array|function(index, Array)} choose - 用于从列表中选出一个值作为列表的选中项，可以返回一个 Promise。
+ * @param {Array|function(number, Array)} choose - 用于从列表中选出一个值作为列表的选中项，可以返回一个 Promise。
  *   其中第一个参数是一个数字，表明当前需要从第几个下拉框中选值；第二个参数是一个数组，即当前下拉框的选项，由用户的 query 函数返回的。
  * @return {Promise} - promise 会在所有值都填完后返回
  */
@@ -147,30 +144,15 @@ p.fill = function (choose) {
     }
   }
 
-  var _this = this
-  return this.reset().then(function () {
-    return _this._iterator(0, choose)
+  return this.ready.then(function () {
+    return this._iterator(0, choose)
   })
 }
 
-function emptyBootstrap () {
-  return resolvedPromise
-}
-
 /**
- * 当用户设置了 auto 为 false 时就需要手动调用这个方法加载第一个下拉框列表。
+ * 重置选项与选中的值
  * @return {Promise}
  */
-p.bootstrap = function () {
-  this.bootstrap = emptyBootstrap
-  return this.reset()
-}
-
-/**
- * 重置选项与选中的值并加载第一个下拉框的选项
- * @return {Promise} - promise 会在第一个下拉框的选项加载完后 resolve
- */
 p.reset = function () {
-  this._max = -1
-  return this._changed(-1)
+  return this.set(0, null)
 }

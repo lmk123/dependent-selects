@@ -12,20 +12,18 @@
     var app = document.getElementById('app')
     var loading = document.getElementById('loading')
 
-    var multi = new MultiLevel({
-      query: function (index, multi) {
-        if (index >= 5) return
-        return new Promise(function (r) {
-          loading.style.display = 'block'
-          setTimeout(function () {
-            loading.style.display = 'none'
-            r(['a', 'b', 'c', 'd', 'e'])
-          }, Math.random() * 500)
-        })
-      }
+    var multi = new MultiLevel(function (index, multi) {
+      if (index >= 5) return
+      return new Promise(function (r) {
+        loading.style.display = 'block'
+        setTimeout(function () {
+          loading.style.display = 'none'
+          r(['a', 'b', 'c', 'd', 'e'])
+        }, Math.random() * 500)
+      })
     })
 
-    multi.on('list added', function (list, index, multi) {
+    multi.on('add', function (list, index, multi) {
       var select = document.createElement('select')
 
       var empty = document.createElement('option')
@@ -44,12 +42,11 @@
       app.appendChild(select)
     })
 
-    multi.on('set value', function (index, val) {
+    multi.on('change', function (val, index) {
       app.children[index].value = val || ''
     })
 
-    multi.on('lists spliced', function (deletedLists, deletedOptions, multi) {
-      var length = deletedLists.length
+    multi.on('cut-off', function (length, multi) {
       var deletedSelect = Array.prototype.slice.call(app.children, app.children.length - length)
       deletedSelect.forEach(function (select) {
         app.removeChild(select)
