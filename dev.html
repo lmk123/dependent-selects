@@ -7,7 +7,7 @@
 <body>
   <script src="dist/multilevel.js"></script>
   <div>
-    Value:
+    Selected:
     <span id="value"></span>
   </div>
   <div id="app"></div>
@@ -38,6 +38,7 @@
         log('Loading the ' + (index + 1) + 'th list...')
         setTimeout(function () {
           log('Done')
+          log('')
           reslove(['a', 'b', 'c', 'd', 'e'])
         }, Math.random() * 500)
       })
@@ -62,6 +63,11 @@
     })
 
     multi.on('set', function (val, index) {
+      if (val != null) {
+        log('Set the ' + (index + 1) + 'th value to "' + val + '"')
+      } else {
+        log('Clear the ' + (index + 1) + 'th value')
+      }
       $app.children[index].value = val || ''
     })
 
@@ -73,13 +79,18 @@
     })
 
     multi.on('change', function () {
-      log('value change to:' + JSON.stringify(multi.selected))
+      log('Selected change to:' + JSON.stringify(multi.selected))
       $value.textContent = JSON.stringify(multi.selected)
     })
 
     $app.addEventListener('change', function (e) {
       var select = e.target
       var index = Array.prototype.indexOf.call($app.children, select)
+      if (select.value) {
+        log('Set the ' + (index + 1) + 'th value to "' + select.value + '"')
+      } else {
+        log('Clear the ' + (index + 1) + 'th value')
+      }
       multi.set(index, select.value, true)
     })
 

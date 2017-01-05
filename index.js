@@ -40,10 +40,11 @@ p.constructor = MultiLevel
 /**
  * 当一个下拉框的值发生变化之后，使用这个方法会清空后续下拉框的选项和值，并重新请求下一个下拉框的选项
  * @param {number} index
+ * @param {boolean} isClear - 如果设为 true，则说明此次修改是一次"清空"操作，不需要请求下一个下拉框的选项
  * @return {Promise}
  * @private
  */
-p._changed = function (index) {
+p._changed = function (index, isClear) {
   var selected = this.selected
   var lists = this.lists
   var curSelected = selected[index]
@@ -53,20 +54,19 @@ p._changed = function (index) {
 
   // 清空后面几个下拉框的选项和值
   var deletedLists = lists.splice(next)
-  var deletedSelected = selected.splice(next)
+  var deletedSelected = selected.splice(isClear ? index : next)
   var length = deletedLists.length
   if (length) {
     this.emit('cut-off', length, this, deletedLists, deletedSelected)
-    this.emit('change', this.selected, this)
+    this.emit('change', selected, this)
   }
 
-  var _this = this
-
-  if (selected[index] == null && index !== -1) {
+  if (isClear && index !== -1) {
     return resolvedPromise
   }
 
   // 获取下一个列表的选项
+  var _this = this
   return convert2promise(this._query(next, this)).then(function (list) {
     // 如果列表为空，说明多级联动已经到了尽头
     if (isEmptyArray(list)) return
@@ -77,16 +77,14 @@ p._changed = function (index) {
     // 新增一个列表
     _this._max = next
     lists.push(list)
-    selected.push(null)
     _this.emit('add', list, next, _this)
-    _this.emit('change', selected, _this)
   })
 }
 
 /**
  * 设置一个下拉框的值
  * @param {number} index - 要设置第几个下拉框
- * @param {*} val
+ * @param val - 此下拉框的值。如果是 null 则会清空此下拉框的选择项
  * @param {boolean} [preventEvent] - 设为 true 则不会触发 'set' 事件
  * @return {Promise}
  */
@@ -109,10 +107,10 @@ p.set = function (index, val, preventEvent) {
     val = null
   }
 
-  this.selected[index] = val
+  if (val != null) this.selected[index] = val
   if (!preventEvent) this.emit('set', val, index)
-  if (index === max) this.emit('change', this.selected, this)
-  return this._changed(index)
+  if (index === max && val != null) this.emit('change', this.selected, this)
+  return this._changed(index, val == null)
 }
 
 /**
