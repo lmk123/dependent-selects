@@ -34,12 +34,12 @@
         log('Lists end')
         return
       }
-      return new Promise(function (reslove) {
+      return new Promise(function (resolve) {
         log('Loading the ' + (index + 1) + 'th list...')
         setTimeout(function () {
           log('Done')
           log('')
-          reslove(['a', 'b', 'c', 'd', 'e'])
+          resolve(['a', 'b', 'c', 'd', 'e'])
         }, Math.random() * 500)
       })
     })

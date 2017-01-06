@@ -23,7 +23,7 @@ function convert2promise (v) {
 
 /**
  * 构造函数
- * @param {function(number, MultiLevel)} query
+ * @param {function(number, Array, MultiLevel)} query
  * @constructor
  */
 function MultiLevel (query) {
@@ -67,7 +67,7 @@ p._changed = function (index, isClear) {
 
   // 获取下一个列表的选项
   var _this = this
-  return convert2promise(this._query(next, this)).then(function (list) {
+  return convert2promise(this._query(next, selected, this)).then(function (list) {
     // 如果列表为空，说明多级联动已经到了尽头
     if (isEmptyArray(list)) return
 
