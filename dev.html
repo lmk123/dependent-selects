@@ -91,7 +91,7 @@
       } else {
         log('Clear the ' + (index + 1) + 'th value')
       }
-      multi.set(index, select.value, true)
+      multi.set(index, select.value || null, true)
     })
 
     $maxLevel.addEventListener('change', function () {

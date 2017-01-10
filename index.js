@@ -89,28 +89,27 @@ p._changed = function (index, isClear) {
  * @return {Promise}
  */
 p.set = function (index, val, preventEvent) {
-  var max = this._max
-  if (index < 0 || index > max) {
-    return Promise.reject(new RangeError('当前一共才' + (max + 1) + '个下拉框，但是你尝试设置第' + (index + 1) + '个下拉框的值'))
-  }
+  var _this = this
+  return this.ready.then(function () {
+    var max = _this._max
+    if (index > max || index < 0) {
+      return Promise.reject(new RangeError('Failed to set the ' + (index + 1) + 'th list\'s value: There are ' + (max + 1) + ' lists only.'))
+    }
 
-  var list = this.lists[index]
-  if (isEmptyArray(list)) {
-    return Promise.reject(new Error('第' + (index + 1) + '个下拉框还没有菜单'))
-  }
+    var list = _this.lists[index]
+    var notEmptyVal = val != null
 
-  var notEmptyVal = val != null
+    // 如果在列表中找不到用户要设置的值则 reject
+    if (notEmptyVal && list.indexOf(val) < 0) {
+      return Promise.reject(new Error('Failed to set the ' + (index + 1) + 'th list\'s value: Can\'t set a value that not exist in the ' + (index + 1) + 'th list.'))
+    }
 
-  // 如果在列表中找不到用户要设置的值则 reject
-  if (notEmptyVal && list.indexOf(val) < 0) {
-    return Promise.reject('在第' + (index + 1) + '个列表中找不到你要设置的值')
-  }
-
-  var selected = this.selected
-  if (notEmptyVal) selected[index] = val
-  if (!preventEvent) this.emit('set', val, index)
-  if (index === max && notEmptyVal) this.emit('change', selected, this)
-  return this._changed(index, !notEmptyVal)
+    var selected = _this.selected
+    if (notEmptyVal) selected[index] = val
+    if (!preventEvent) _this.emit('set', val, index)
+    if (index === max && notEmptyVal) _this.emit('change', selected, _this)
+    return this._changed(index, !notEmptyVal)
+  })
 }
 
 /**
