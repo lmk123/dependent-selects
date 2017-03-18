@@ -1,35 +1,48 @@
 {
-  "name": "multilevel.js",
+  "name": "dependent-selects",
   "version": "0.2.0",
-  "description": "An easy way to create asynchronous multi-level linkage selector.",
-  "files": [
-    "index.js",
-    "dist"
-  ],
+  "description": "An easy way to create asynchronous multi-level select boxes.",
+  "main": "dist/dependent-selects.common.js",
+  "module": "dist/dependent-selects.esm.js",
+  "unpkg": "dist/dependent-selects.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lmk123/multilevel.js.git"
+    "url": "git+https://github.com/lmk123/dependent-selects.git"
   },
   "scripts": {
-    "dev": "webpack --watch",
-    "build": "npm run lint && webpack && PRODUCTION=1 webpack",
-    "lint": "eslint --ignore-pattern '/dist/' '**/*.{js,vue}'",
-    "prepublish": "npm run build"
+    "dev": "webpack-dev-server --inline --config build/webpack.dev.js",
+    "lint": "eslint --ignore-pattern '/dist/' '**/*.js'",
+    "build": "npm run build:es && npm run build:cjs && npm run build:umd && npm run build:umd-min",
+    "build:es": "rollup -c build/rollup.config.js --environment FORMAT:es",
+    "build:cjs": "rollup -c build/rollup.config.js --environment FORMAT:cjs",
+    "build:umd": "rollup -c build/rollup.config.js --environment FORMAT:umd",
+    "build:umd-min": "rollup -c build/rollup.config.js --environment FORMAT:umd,MIN"
   },
   "dependencies": {
     "tiny-emitter": "1.1.0"
   },
   "devDependencies": {
-    "eslint": "3.12.2",
-    "eslint-config-standard": "6.2.1",
-    "eslint-plugin-promise": "3.4.0",
-    "eslint-plugin-standard": "2.0.1",
-    "webpack": "1.14.0"
+    "babel-core": "6.24.0",
+    "babel-loader": "6.4.1",
+    "babel-preset-env": "1.2.2",
+    "eslint": "3.18.0",
+    "eslint-config-standard": "7.1.0",
+    "eslint-plugin-promise": "3.5.0",
+    "eslint-plugin-standard": "2.1.1",
+    "html-webpack-plugin": "2.28.0",
+    "openpack": "1.0.0",
+    "rollup": "0.41.6",
+    "rollup-plugin-buble": "0.15.0",
+    "rollup-plugin-commonjs": "8.0.2",
+    "rollup-plugin-node-resolve": "2.0.0",
+    "rollup-plugin-uglify": "1.0.1",
+    "webpack": "2.2.1",
+    "webpack-dev-server": "2.4.2"
   },
   "author": "Mingkai Li <milk.lee@qq.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/lmk123/multilevel.js/issues"
+    "url": "https://github.com/lmk123/dependent-selects/issues"
   },
-  "homepage": "https://github.com/lmk123/multilevel.js#readme"
+  "homepage": "https://github.com/lmk123/dependent-selects#readme"
 }

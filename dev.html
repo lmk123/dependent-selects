@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title></title>
-  <script src="dist/multilevel.js"></script>
 </head>
 <body>
   <div>
@@ -29,7 +28,7 @@
 
     var maxLevel = 5
 
-    var multi = new MultiLevel(function (index) {
+    var multi = new DependentSelects.default(function (index) {
       if (index >= maxLevel) {
         log('Lists end')
         return

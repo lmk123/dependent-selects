@@ -1,0 +1,24 @@
+{
+  "presets": [
+    [
+      "env",
+      {
+        "targets": {
+          "browsers": [
+            "last 2 versions"
+          ]
+        },
+        "modules": false,
+        "loose": true,
+        "exclude": [
+          "transform-async-to-generator",
+          "transform-regenerator",
+          "transform-es2015-typeof-symbol",
+          "transform-es2015-unicode-regex",
+          "transform-regenerator",
+          "transform-es2015-for-of"
+        ]
+      }
+    ]
+  ]
+}
