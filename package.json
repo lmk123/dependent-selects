@@ -16,7 +16,8 @@
     "build:es": "rollup -c build/rollup.config.js --environment FORMAT:es",
     "build:cjs": "rollup -c build/rollup.config.js --environment FORMAT:cjs",
     "build:umd": "rollup -c build/rollup.config.js --environment FORMAT:umd",
-    "build:umd-min": "rollup -c build/rollup.config.js --environment FORMAT:umd,MIN"
+    "build:umd-min": "rollup -c build/rollup.config.js --environment FORMAT:umd,MIN",
+    "prepublish": "npm run build"
   },
   "dependencies": {
     "tiny-emitter": "1.1.0"
