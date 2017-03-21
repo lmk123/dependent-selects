@@ -1,6 +1,6 @@
 {
   "name": "dependent-selects",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "An easy way to create asynchronous dependent selects boxes.",
   "main": "dist/dependent-selects.common.js",
   "module": "dist/dependent-selects.esm.js",
