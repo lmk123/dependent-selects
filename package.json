@@ -1,6 +1,6 @@
 {
   "name": "dependent-selects",
-  "version": "0.2.0",
+  "version": "0.1.0",
   "description": "An easy way to create asynchronous multi-level select boxes.",
   "main": "dist/dependent-selects.common.js",
   "module": "dist/dependent-selects.esm.js",
