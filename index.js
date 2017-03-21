@@ -1,4 +1,5 @@
 import TinyEmitter from 'tiny-emitter'
+
 const resolvedPromise = Promise.resolve()
 
 /**

@@ -1,7 +1,7 @@
 {
   "name": "dependent-selects",
   "version": "0.1.0",
-  "description": "An easy way to create asynchronous multi-level select boxes.",
+  "description": "An easy way to create asynchronous dependent selects boxes.",
   "main": "dist/dependent-selects.common.js",
   "module": "dist/dependent-selects.esm.js",
   "unpkg": "dist/dependent-selects.js",
@@ -42,6 +42,11 @@
   },
   "author": "Mingkai Li <milk.lee@qq.com>",
   "license": "MIT",
+  "keywords": [
+    "dependent",
+    "selects",
+    "asynchronous"
+  ],
   "bugs": {
     "url": "https://github.com/lmk123/dependent-selects/issues"
   },
