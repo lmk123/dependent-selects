@@ -32,7 +32,16 @@ switch (FORMAT) {
   default:
     config.format = 'umd'
     config.moduleName = 'DependentSelects'
-    config.dest = 'dist/dependent-selects.js'
+    if (process.env.MIN) {
+      config.dest = 'dist/dependent-selects.min.js'
+      config.plugins.push(uglify({
+        output: {
+          comments: /^!/
+        }
+      }))
+    } else {
+      config.dest = 'dist/dependent-selects.js'
+    }
     break
 }
 
@@ -40,11 +49,6 @@ if (config.format === 'umd') {
   config.plugins.unshift(resolve(), commonjs())
 } else {
   config.external = ['tiny-emitter']
-}
-
-if (process.env.MIN) {
-  config.dest = 'dist/dependent-selects.min.js'
-  config.plugins.push(uglify())
 }
 
 module.exports = config
